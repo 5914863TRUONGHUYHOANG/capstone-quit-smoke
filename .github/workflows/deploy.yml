@@ -8,7 +8,7 @@ on:
         # This script runs every time someone pushes code to the main branch.
         ## 이 스크립트는 누군가가 main 브랜치로 코드를 푸시할 때마다 실행됩니다.
 env:
-  PROJECT_ID: ${{ secrets.GCP_CAPSTONEQUITSMOKE }}
+  PROJECT_ID: capstone-quit-smoke
   REGION: asia-northeast3 
     # Chọn Seoul cho gần và nhanh nhé
     # 서울로 합시다. 더 가깝고 빠르니까요.
