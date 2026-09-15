@@ -13,7 +13,7 @@ env:
     # Chọn Seoul cho gần và nhanh nhé
     # 서울로 합시다. 더 가깝고 빠르니까요.
     # Let's choose Seoul—it's closer and quicker.
-  REPO_NAME: team6_capstone-quit-smoke
+  REPO_NAME: capstone-quit-smoke
   SERVICE_NAME: capstone-api-server
 
 jobs:
