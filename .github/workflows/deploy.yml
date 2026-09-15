@@ -42,9 +42,10 @@ jobs:
         docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPO_NAME }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
 
     - name: Deploy to Cloud Run
-      run: |
-        gcloud run deploy ${{ env.SERVICE_NAME }} \
-          --image ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPO_NAME }}/${{ env.SERVICE_NAME }}:${{ github.sha }} \
-          --region ${{ env.REGION }} \
-          --platform managed \
-          --allow-unauthenticated
+  run: |
+    gcloud run deploy ${{ env.SERVICE_NAME }} \
+      --image ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPO_NAME }}/${{ env.SERVICE_NAME }}:${{ github.sha }} \
+      --region ${{ env.REGION }} \
+      --platform managed \
+      --port 80 \
+      --allow-unauthenticated
