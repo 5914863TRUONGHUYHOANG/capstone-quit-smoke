@@ -1,0 +1,5 @@
+env:
+  PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  REGION: asia-northeast3 
+  REPO_NAME: capstone-quit-smoke-fit # Sửa tên repo cho đúng với tên repo trên GitHub của nhóm//GitHub의 팀 리포지토리 이름과 일치하도록 리포지토리 이름을 변경하세요.//GitHub ရှိ အဖွဲ့၏ repository အမည်နှင့် ကိုက်ညီစေရန် repository အမည်ကို ပြောင်းလဲပါ။
+  SERVICE_NAME: capstone-api-server
