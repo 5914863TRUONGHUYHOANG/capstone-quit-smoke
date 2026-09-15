@@ -1,8 +1,50 @@
+name: Deploy to Google Cloud Run
+
+on:
+  push:
+    branches:
+      - main 
+        # Cứ mỗi lần có người push code lên nhánh main là kịch bản này chạy
+        # This script runs every time someone pushes code to the main branch.
+        ## 이 스크립트는 누군가가 main 브랜치로 코드를 푸시할 때마다 실행됩니다.
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
   REGION: asia-northeast3 
-  REPO_NAME: capstone-quit-smoke-fit 
-    # Sửa tên repo cho đúng với tên repo trên GitHub của nhóm
-    #GitHub의 팀 리포지토리 이름과 일치하도록 리포지토리 이름을 변경하세요.
-    #GitHub ရှိ အဖွဲ့၏ repository အမည်နှင့် ကိုက်ညီစေရန် repository အမည်ကို ပြောင်းလဲပါ။
-  SERVICE_NAME: capstone-api-server 
+    # Chọn Seoul cho gần và nhanh nhé
+    # 서울로 합시다. 더 가깝고 빠르니까요.
+    # Let's choose Seoul—it's closer and quicker.
+  REPO_NAME: capstone-quit-smoke
+  SERVICE_NAME: capstone-api-server
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Google Auth
+      id: auth
+      uses: 'google-github-actions/auth@v1'
+      with:
+        credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v1
+
+    - name: Configure Docker
+      run: gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev
+
+    - name: Build and Push Docker image
+      run: |
+        docker build -t ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPO_NAME }}/${{ env.SERVICE_NAME }}:${{ github.sha }} .
+        docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPO_NAME }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
+
+    - name: Deploy to Cloud Run
+      run: |
+        gcloud run deploy ${{ env.SERVICE_NAME }} \
+          --image ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPO_NAME }}/${{ env.SERVICE_NAME }}:${{ github.sha }} \
+          --region ${{ env.REGION }} \
+          --platform managed \
+          --allow-unauthenticated
