@@ -1,0 +1,45 @@
+                    ┌─────────────┐
+                    │    USERS    │
+                    ├─────────────┤
+                    │ PK user_id  │
+                    │ nickname    │
+                    │ quit_date   │
+                    │ created_at  │
+                    └──────┬──────┘
+                           │
+          ┌────────────────┼────────────────┐
+          │                │                │
+          ▼                ▼                ▼
+ ┌────────────────┐ ┌───────────────┐ ┌─────────────────┐
+ │  CRAVING_LOGS  │ │ EXERCISE_LOGS │ │ HEALTH_SYNC_LOG │
+ ├────────────────┤ ├───────────────┤ ├─────────────────┤
+ │ PK craving_id  │ │ PK exercise_id│ │ PK sync_id      │
+ │ FK user_id     │ │ FK user_id    │ │ FK user_id      │
+ │ intensity      │ │ type          │ │ steps           │
+ │ before_level   │ │ duration      │ │ calories        │
+ │ after_level    │ │ calories      │ │ heart_rate      │
+ │ created_at     │ │ source        │ │ source          │
+ └────────────────┘ └───────┬───────┘ └─────────────────┘
+                             │
+                             ▼
+                    ┌────────────────┐
+                    │  POINT_LEDGER  │
+                    ├────────────────┤
+                    │ PK point_id    │
+                    │ FK user_id     │
+                    │ exercise_id    │
+                    │ point_type     │
+                    │ points         │
+                    │ created_at     │
+                    └───────┬────────┘
+                            │
+                            ▼
+                    ┌────────────────┐
+                    │    RANKINGS    │
+                    ├────────────────┤
+                    │ PK ranking_id  │
+                    │ FK user_id     │
+                    │ total_points   │
+                    │ rank           │
+                    │ updated_at     │
+                    └────────────────┘
