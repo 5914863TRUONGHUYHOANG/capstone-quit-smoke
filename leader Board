@@ -1,0 +1,53 @@
+package com.quitsmokefit.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ZSetOperations;
+import org.springframework.stereotype.Service;
+
+import java.util.*;
+
+@Service
+public class LeaderboardService {
+
+    @Autowired
+    private StringRedisTemplate redisTemplate;
+
+    private static final String LEADERBOARD_KEY = "weekly_ranking";
+
+    /**
+     * Increments score by +30P when the 3-minute exercise is completed.
+     */
+    public Double addPoints(String userId, double points) {
+        return redisTemplate.opsForZSet().incrementScore(LEADERBOARD_KEY, userId, points);
+    }
+
+    /**
+     * Gets user's exact 1-indexed rank from Redis ZSET.
+     */
+    public Long getUserRank(String userId) {
+        Long rank = redisTemplate.opsForZSet().reverseRank(LEADERBOARD_KEY, userId);
+        return (rank != null) ? rank + 1 : -1;
+    }
+
+    /**
+     * Fetches Top N leaderboard positions.
+     */
+    public List<Map<String, Object>> getTopRankings(int count) {
+        Set<ZSetOperations.TypedTuple<String>> range = 
+            redisTemplate.opsForZSet().reverseRangeWithScores(LEADERBOARD_KEY, 0, count - 1);
+
+        List<Map<String, Object>> rankings = new ArrayList<>();
+        if (range != null) {
+            int rank = 1;
+            for (ZSetOperations.TypedTuple<String> item : range) {
+                Map<String, Object> entry = new HashMap<>();
+                entry.put("rank", rank++);
+                entry.put("username", item.getValue());
+                entry.put("points", item.getScore() != null ? item.getScore().longValue() : 0);
+                rankings.add(entry);
+            }
+        }
+        return rankings;
+    }
+}
