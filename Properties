@@ -1,0 +1,5 @@
+server.port=8080
+
+# Redis Connection Settings
+spring.data.redis.host=localhost
+spring.data.redis.port=6379
