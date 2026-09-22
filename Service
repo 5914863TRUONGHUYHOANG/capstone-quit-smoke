@@ -1,0 +1,45 @@
+package com.quitsmokefit.service;
+
+import org.springframework.stereotype.Service;
+import org.tensorflow.lite.Interpreter;
+
+import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+
+@Service
+public class CravingPredictionService {
+
+    private Interpreter tflite;
+
+    public CravingPredictionService() {
+        try {
+            InputStream inputStream = getClass().getClassLoader().getResourceAsStream("craving_model.tflite");
+            if (inputStream != null) {
+                byte[] modelBytes = inputStream.readAllBytes();
+                ByteBuffer buffer = ByteBuffer.allocateDirect(modelBytes.length);
+                buffer.order(ByteOrder.nativeOrder());
+                buffer.put(modelBytes);
+                this.tflite = new Interpreter(buffer);
+            }
+        } catch (Exception e) {
+            this.tflite = null;
+        }
+    }
+
+    public float predictCravingRisk(float timeOfDay, int daysQuit, int stressLevel, float hoursSinceLastCraving) {
+        if (tflite == null) {
+            // Fallback rule-based risk calculation
+            float baseRisk = (stressLevel * 0.08f) + (timeOfDay > 18.0f ? 0.25f : 0.10f);
+            return Math.min(1.0f, Math.max(0.0f, baseRisk));
+        }
+
+        float[][] inputVal = new float[][]{
+            { timeOfDay, (float) daysQuit, (float) stressLevel, hoursSinceLastCraving }
+        };
+        float[][] outputVal = new float[1][1];
+
+        tflite.run(inputVal, outputVal);
+        return outputVal[0][0];
+    }
+}
