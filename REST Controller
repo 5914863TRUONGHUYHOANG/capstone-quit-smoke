@@ -1,0 +1,57 @@
+package com.quitsmokefit.controller;
+
+import com.quitsmokefit.service.CravingPredictionService;
+import com.quitsmokefit.service.LeaderboardService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.*;
+
+@RestController
+@RequestMapping("/api/v1")
+@CrossOrigin(origins = "*")
+public class AppController {
+
+    @Autowired
+    private LeaderboardService leaderboardService;
+
+    @Autowired
+    private CravingPredictionService predictionService;
+
+    @PostMapping("/exercise/complete")
+    public Map<String, Object> completeExercise(@RequestParam String userId) {
+        Double updatedPoints = leaderboardService.addPoints(userId, 30.0);
+        Long currentRank = leaderboardService.getUserRank(userId);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("status", "success");
+        response.put("exerciseDurationMinutes", 3);
+        response.put("addedPoints", 30);
+        response.put("totalPoints", updatedPoints != null ? updatedPoints.longValue() : 0);
+        response.put("rank", currentRank);
+
+        return response;
+    }
+
+    @GetMapping("/leaderboard")
+    public List<Map<String, Object>> getLeaderboard() {
+        return leaderboardService.getTopRankings(3);
+    }
+
+    @GetMapping("/predict-craving")
+    public Map<String, Object> predictCraving(
+            @RequestParam float timeOfDay,
+            @RequestParam int daysQuit,
+            @RequestParam int stressLevel,
+            @RequestParam float hoursSinceLastCraving) {
+
+        float riskScore = predictionService.predictCravingRisk(timeOfDay, daysQuit, stressLevel, hoursSinceLastCraving);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("riskScore", riskScore);
+        response.put("shouldTriggerChallenge", riskScore > 0.65f);
+        response.put("recommendedChallengeDuration", "3 minutes");
+
+        return response;
+    }
+}
