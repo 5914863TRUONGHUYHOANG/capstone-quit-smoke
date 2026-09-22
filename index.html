@@ -105,7 +105,7 @@
 
         <div class="timer-box" id="timerBox">
             <h3>🏃 대체 운동 5분 챌린지 (버피테스트)</h3>
-            <div class="time-display" id="time">05:00</div>
+            <div class="time-display" id="time">03:00</div>
             <p style="font-size: 12px; color: #666;">완료 시 +30P 즉시 적립!</p>
         </div>
 
@@ -121,7 +121,7 @@
 <script>
     function startTimer() {
         document.getElementById('timerBox').style.display = 'block';
-        let timeLeft = 300; // 5 phút = 300 giây
+        let timeLeft = 180; // 3 phút = 180 giây
         
         let timer = setInterval(function() {
             let minutes = Math.floor(timeLeft / 60);
