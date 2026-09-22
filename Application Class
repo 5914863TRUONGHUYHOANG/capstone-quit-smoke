@@ -1,0 +1,11 @@
+package com.quitsmokefit;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class QuitSmokeFitApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(QuitSmokeFitApplication.class, args);
+    }
+}
