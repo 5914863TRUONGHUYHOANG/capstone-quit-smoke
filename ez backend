@@ -1,0 +1,31 @@
+                    ┌─────────────┐
+                    │    USERS    │
+                    ├─────────────┤
+                    │ PK user_id  │
+                    │ nickname    │
+                    │ quit_date   │
+                    │ total_point │
+                    └──────┬──────┘
+                           │
+             ┌─────────────┼─────────────┐
+             │                           │
+             ▼                           ▼
+      ┌───────────────┐           ┌──────────────┐
+      │ EXERCISE_LOGS │           │ CRAVING_LOGS │
+      ├───────────────┤           ├──────────────┤
+      │ PK exercise_id│           │ PK craving_id│
+      │ FK user_id    │           │ FK user_id   │
+      │ type          │           │ intensity    │
+      │ duration      │           │ before_level │
+      │ points        │           │ after_level  │
+      │ created_at    │           │ created_at   │
+      └───────┬───────┘           └──────────────┘
+              │
+              ▼
+       ┌───────────────┐
+       │    RANKINGS   │
+       ├───────────────┤
+       │ user_id (FK)  │
+       │ total_points  │
+       │ rank          │
+       └───────────────┘
